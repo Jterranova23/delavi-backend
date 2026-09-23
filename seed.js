@@ -1,15 +1,18 @@
-require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const slugify = require('slugify');
 const db = require('./config/db');
 
+// Exportada para poder llamarla tanto desde "npm run seed" (uso local) como
+// automáticamente al arrancar el servidor (uso en producción, ej. Railway),
+// sin depender de un paso manual aparte. Es segura de llamar varias veces:
+// no crea un segundo admin ni duplica categorías si ya existen.
 function run() {
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_PASSWORD;
 
   if (!email || !password) {
-    console.error('⛔ Define ADMIN_EMAIL y ADMIN_PASSWORD en tu .env antes de correr el seed.');
-    process.exit(1);
+    console.warn('⚠️  ADMIN_EMAIL/ADMIN_PASSWORD no definidos: se omite la creación del admin inicial.');
+    return;
   }
 
   const existing = db.prepare('SELECT id FROM admins WHERE email = ?').get(email);
@@ -33,4 +36,11 @@ function run() {
   console.log('✅ Categorías de ejemplo listas (puedes editarlas o borrarlas desde el panel admin).');
 }
 
-run();
+module.exports = { run };
+
+// Si se ejecuta directamente ("node seed.js" / "npm run seed"), corre de una vez.
+// Si otro archivo hace require('./seed'), solo queda disponible run() para llamarla cuando quiera.
+if (require.main === module) {
+  require('dotenv').config();
+  run();
+}

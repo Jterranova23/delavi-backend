@@ -11,6 +11,11 @@ const categoriesRouter = require('./routes/categories');
 const ordersRouter = require('./routes/orders');
 const authRouter = require('./routes/auth');
 const payphoneRouter = require('./routes/payphone');
+const { run: seedInitialData } = require('./seed');
+
+// Crea el admin inicial y las categorías de ejemplo si todavía no existen.
+// Segura de correr en cada arranque: no duplica nada si ya está hecho.
+seedInitialData();
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.includes('CAMBIA_ESTO')) {
   console.error('⛔ Debes definir un JWT_SECRET real en tu archivo .env antes de arrancar en producción.');
@@ -57,7 +62,7 @@ app.use(
 );
 
 // Archivos de imágenes subidas por el admin
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), { maxAge: '30d' }));
+app.use('/uploads', express.static(path.join(__dirname, 'data', 'uploads'), { maxAge: '30d' }));
 
 // --- Rutas del API -----------------------------------------------------------------
 app.use('/api/auth', authRouter);

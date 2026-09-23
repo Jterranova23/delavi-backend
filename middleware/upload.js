@@ -2,7 +2,10 @@ const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
+// Vive dentro de la misma carpeta "data" que la base de datos porque, en
+// plataformas como Railway, solo se puede montar UN volumen persistente por
+// servicio — así ambas cosas (BD e imágenes) sobreviven a cada despliegue.
+const UPLOAD_DIR = path.join(__dirname, '..', 'data', 'uploads');
 require('fs').mkdirSync(UPLOAD_DIR, { recursive: true });
 
 const ALLOWED_MIME = new Set(['image/jpeg', 'image/png', 'image/webp']);
