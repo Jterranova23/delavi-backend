@@ -31,7 +31,13 @@ app.set('trust proxy', 1);
 // --- Seguridad de cabeceras HTTP -------------------------------------------------
 app.use(
   helmet({
-    contentSecurityPolicy: false // el frontend define su propio CSP; ver frontend/README
+    contentSecurityPolicy: false, // el frontend define su propio CSP; ver frontend/README
+    // Las imágenes de producto se sirven desde un dominio (Railway) distinto al
+    // del frontend (Netlify). Por defecto, Helmet bloquea que otros orígenes
+    // "usen" (rendericen) estos recursos — por eso las fotos se veían rotas.
+    // Como son fotos de catálogo público, es seguro permitir que cualquier
+    // origen las cargue.
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
   })
 );
 
