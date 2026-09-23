@@ -1,0 +1,7 @@
+Node.js dependencies (instaladas al correr npm install):
+node_modules/
+data/
+uploads/*
+!uploads/.gitkeep
+.env
+*.log
